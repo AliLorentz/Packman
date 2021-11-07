@@ -16,54 +16,53 @@ import javax.swing.JLabel;
  *
  * @author USUARIO
  */
-public class Enemy {
-
-    JLabel enemy = new JLabel();
+public class Key {
+    JLabel key = new JLabel();
     //Coloco a mi personaje en una posicion dada
     Point posicion = new Point(380, 170);
-    boolean controlEnemy = true;
     private final int pos = 1;
+    private boolean tengoLaLlave=false;
     public static int ALTO = 40, ANCHO = 40;
-    Rectangle areaEnemy;
+    Rectangle areaKey;
 
-    Enemy(int x, int y) {
+    Key(int x, int y) {
         setTamaño(x, y);
-        areaEnemy = new Rectangle(x, y, ANCHO, ALTO);
+        areaKey = new Rectangle(x,y, ANCHO, ALTO);
         paint();
     }
 
     private void setTamaño(int x, int y) {
-        enemy.setSize(ALTO, ANCHO);
-        enemy.setLocation(x, y);
+        key.setSize(ALTO, ANCHO);
+        key.setLocation(x,y);
     }
 
     private void paint() {
-        URL url = getClass().getResource("object/Enemigo.png");
+        URL url = getClass().getResource("object/Key.png");
         ImageIcon imagen = new ImageIcon(url);
-        Icon icon = new ImageIcon(imagen.getImage().getScaledInstance(enemy.getWidth(), enemy.getHeight(), Image.SCALE_DEFAULT));
-        enemy.setIcon(icon);
-        enemy.repaint();
+        Icon icon = new ImageIcon(imagen.getImage().getScaledInstance(key.getWidth(), key.getHeight(), Image.SCALE_DEFAULT));
+        key.setIcon(icon);
+        key.repaint();
     }
 
     public void setPosicion(int x, int y) {
-        enemy.setLocation(x, y);
-        areaEnemy.setBounds(x, y, (int) areaEnemy.getWidth(), (int) areaEnemy.getHeight());
+        key.setLocation(x, y);
+        areaKey.setBounds(x, y, (int) areaKey.getWidth(), (int) areaKey.getHeight());
     }
 
     public int posX() {
-        return enemy.getX();
+        return key.getX();
     }
 
     public int posY() {
-        return enemy.getY();
-    }
-
-    public void setControlEnemy() {
-        controlEnemy = !controlEnemy;
+        return key.getY();
     }
     
-    public boolean controlEnemy(){
-        return controlEnemy;
+    public void llaveObtenida(){
+        tengoLaLlave = true;
+    }
+    
+    public boolean getLlave(){
+        return tengoLaLlave;
     }
 
 }

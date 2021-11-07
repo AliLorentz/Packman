@@ -16,54 +16,44 @@ import javax.swing.JLabel;
  *
  * @author USUARIO
  */
-public class Enemy {
-
-    JLabel enemy = new JLabel();
+public class Puerta {
+    JLabel door = new JLabel();
     //Coloco a mi personaje en una posicion dada
     Point posicion = new Point(380, 170);
-    boolean controlEnemy = true;
     private final int pos = 1;
     public static int ALTO = 40, ANCHO = 40;
     Rectangle areaEnemy;
 
-    Enemy(int x, int y) {
+    Puerta(int x, int y) {
         setTamaño(x, y);
-        areaEnemy = new Rectangle(x, y, ANCHO, ALTO);
+        areaEnemy = new Rectangle(x,y, ANCHO, ALTO);
         paint();
     }
 
     private void setTamaño(int x, int y) {
-        enemy.setSize(ALTO, ANCHO);
-        enemy.setLocation(x, y);
+        door.setSize(ALTO, ANCHO);
+        door.setLocation(x,y);
     }
 
     private void paint() {
-        URL url = getClass().getResource("object/Enemigo.png");
+        URL url = getClass().getResource("object/Door.png");
         ImageIcon imagen = new ImageIcon(url);
-        Icon icon = new ImageIcon(imagen.getImage().getScaledInstance(enemy.getWidth(), enemy.getHeight(), Image.SCALE_DEFAULT));
-        enemy.setIcon(icon);
-        enemy.repaint();
+        Icon icon = new ImageIcon(imagen.getImage().getScaledInstance(door.getWidth(), door.getHeight(), Image.SCALE_DEFAULT));
+        door.setIcon(icon);
+        door.repaint();
     }
 
     public void setPosicion(int x, int y) {
-        enemy.setLocation(x, y);
+        door.setLocation(x, y);
         areaEnemy.setBounds(x, y, (int) areaEnemy.getWidth(), (int) areaEnemy.getHeight());
     }
 
     public int posX() {
-        return enemy.getX();
+        return door.getX();
     }
 
     public int posY() {
-        return enemy.getY();
-    }
-
-    public void setControlEnemy() {
-        controlEnemy = !controlEnemy;
-    }
-    
-    public boolean controlEnemy(){
-        return controlEnemy;
+        return door.getY();
     }
 
 }

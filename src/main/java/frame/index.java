@@ -18,6 +18,7 @@ public class index {
     JFrame frame;
     Window window;
     Game game;
+    Inicio inicio;
 
     public index() {
         frame = new JFrame("Packman");
