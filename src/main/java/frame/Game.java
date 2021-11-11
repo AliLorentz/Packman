@@ -11,8 +11,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -23,23 +25,33 @@ import javax.swing.Timer;
 public class Game {
 
     private JFrame fr;
+    private Archivo archivo;
     private User user;
     private JPanel panel;
     private Vidas v;
-    private Enemy enemy,enemy2,enemy3,enemy4;
+    private Enemy enemy, enemy2, enemy3, enemy4;
     private Key key;
     private Puerta puerta;
     Level level;
     int vidas = 0;
     private Wall wall1, wall2, wall3, wall4, wall5, wall6;
     private boolean up = true, down = true, left = true, right = true;
-    private boolean controlEnemy1=false;
-    private int nivel=1;
+    private boolean controlEnemy1 = false;
+    private int nivel = 1;
     Timer t;
 
     Game(JFrame frame) throws IOException {
         this.fr = frame;
         fr.requestFocus();
+        archivo = new Archivo("s");
+        String [] leer= archivo.leer();
+        if(leer!=null){
+            int vida=Integer.parseInt(leer[2]);
+        int niveles=Integer.parseInt(leer[3]);
+        vidas=vida;
+        nivel=niveles;
+        } 
+        
         ventana();
         movimiento();
         addElemets();
@@ -48,10 +60,10 @@ public class Game {
         t.start();
         fr.add(panel);
     }
-    
-    private void addElemets(){
+
+    private void addElemets() {
         agregarVida();
-        agregarPersonaje();     
+        agregarPersonaje();
         agregarEnemigos();
         agregarLlave();
         agregarPuerta();
@@ -66,45 +78,66 @@ public class Game {
     }
 
     private void agregarPersonaje() {
-        user = new User(50, 50);
-        panel.add(user.personaje);
+        try {
+            archivo = new Archivo("s");
+            String [] leer= archivo.leer();
+            
+            
+            user = new User(50, 50);
+            if(leer!=null){
+            int x=Integer.parseInt(leer[0]);
+            int y=Integer.parseInt(leer[1]); 
+            user.setPosicion(x, y);
+            }
+            
+            panel.add(user.personaje);
+        } catch (IOException ex) {
+            Logger.getLogger(Game.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
-    
+
     private void agregarVida() {
         v = new Vidas();
-        panel.add(v.vida1);
+        if(vidas==0){
+            panel.add(v.vida1);
         panel.add(v.vida2);
         panel.add(v.vida3);
+        }else if(vidas==1){
+            panel.add(v.vida2);
+        panel.add(v.vida3);
+        }else{
+            panel.add(v.vida3);
+        }
     }
 
     private void agregarMuros() {
-       level = new Level();
-       int [] wallPosition;
-       if(nivel==1){
-           wallPosition=level.wallLevel1();
-       }else{
-           wallPosition=level.wallLevel2();
-          panel.removeAll();
-           panel.updateUI();
-           addElemets();                    
-       }
-       
+        level = new Level();
+        int[] wallPosition;
+        if (nivel == 1) {
+            wallPosition = level.wallLevel1();
+        } else {
+            wallPosition = level.wallLevel2();
+            panel.removeAll();
+            panel.updateUI();
+            addElemets();
+        }
+
         Wall barra1 = new Wall(0, -20, 20, 600);
         Wall barra2 = new Wall(0, 0, 1000, 20);
         Wall barra3 = new Wall(970, -20, 20, 600);
         Wall barra4 = new Wall(0, 550, 1000, 20);
 
-        wall1 = new Wall(wallPosition[0], wallPosition[1], wallPosition[2], wallPosition[3]);    
-        wall2 = new Wall(wallPosition[4], wallPosition[5], wallPosition[6], wallPosition[7]);       
+        wall1 = new Wall(wallPosition[0], wallPosition[1], wallPosition[2], wallPosition[3]);
+        wall2 = new Wall(wallPosition[4], wallPosition[5], wallPosition[6], wallPosition[7]);
         wall3 = new Wall(wallPosition[8], wallPosition[9], wallPosition[10], wallPosition[11]);
         wall4 = new Wall(wallPosition[12], wallPosition[13], wallPosition[14], wallPosition[15]);
         wall5 = new Wall(wallPosition[16], wallPosition[17], wallPosition[18], wallPosition[19]);
-        
+
         panel.add(barra4.wall);
         panel.add(barra2.wall);
         panel.add(barra3.wall);
         panel.add(barra1.wall);
-        
+
         panel.add(wall1.wall);
         panel.add(wall2.wall);
         panel.add(wall3.wall);
@@ -114,16 +147,16 @@ public class Game {
         panel.add(wall5.wall);
 
     }
-    
-    private void agregarEnemigos(){
+
+    private void agregarEnemigos() {
         Level l1 = new Level();
-        int [] enemyLevel;
-        if(nivel==1){
-           enemyLevel = l1.enemyLevel1();
-        }else{
+        int[] enemyLevel;
+        if (nivel == 1) {
+            enemyLevel = l1.enemyLevel1();
+        } else {
             enemyLevel = l1.enemyLevel2();
         }
-        
+
         enemy = new Enemy(enemyLevel[0], enemyLevel[1]);
         enemy2 = new Enemy(enemyLevel[2], enemyLevel[3]);
         enemy3 = new Enemy(enemyLevel[4], enemyLevel[5]);
@@ -132,32 +165,61 @@ public class Game {
         panel.add(enemy2.enemy);
         panel.add(enemy3.enemy);
         panel.add(enemy.enemy);
-        
+
     }
-    
-    private void agregarLlave(){
+
+    private void agregarLlave() {
         Level l1 = new Level();
-        int [] enemyLevel;
-        if(nivel==1){
-           enemyLevel = l1.llaveLevel1();
-        }else{
+        int[] enemyLevel;
+        if (nivel == 1) {
+            enemyLevel = l1.llaveLevel1();
+        } else {
             enemyLevel = l1.llaveLevel2();
         }
-        key = new Key(enemyLevel[0],enemyLevel[1]);
+        key = new Key(enemyLevel[0], enemyLevel[1]);
         panel.add(key.key);
-        
+
     }
-    
-    private void agregarPuerta(){
+
+    private void agregarPuerta() {
         Level l1 = new Level();
-        int [] enemyLevel;
-        if(nivel==1){
-           enemyLevel = l1.PuertaLevel1();
-        }else{
+        int[] enemyLevel;
+        if (nivel == 1) {
+            enemyLevel = l1.PuertaLevel1();
+        } else {
             enemyLevel = l1.PuertaLevel2();
         }
-         puerta = new Puerta(enemyLevel[0],enemyLevel[1]);
+        puerta = new Puerta(enemyLevel[0], enemyLevel[1]);
         panel.add(puerta.door);
+    }
+
+    private void deleteVida() {
+        Level l1 = new Level();
+        int[] enemyLevel;
+        if (nivel == 1) {
+            enemyLevel = l1.positionUserLevel1();
+        } else {
+            enemyLevel = l1.positionUserLevel2();
+        }
+        if (vidas == 0) {
+            user.setPosicion(enemyLevel[0], enemyLevel[1]);
+            v.vida1.setVisible(false);
+        }
+        if (vidas == 1) {
+            user.setPosicion(enemyLevel[0], enemyLevel[1]);
+            v.vida2.setVisible(false);
+        }
+        if (vidas == 3) {
+            archivo = new Archivo("s");
+            archivo.ArchivoPosition(400, 450,0,1);
+            JOptionPane.showMessageDialog(null, "Perdio Gracias por jugar");
+            fr.remove(panel);
+            panel.setVisible(false);
+            t.stop();
+             
+            System.exit(0);
+        }
+        vidas++;
     }
 
     private void movimiento() {
@@ -187,7 +249,8 @@ public class Game {
         int bandera = e.getExtendedKeyCode();
         //Escape
         if (bandera == KeyEvent.VK_ESCAPE) {
-
+            archivo = new Archivo("s");
+            archivo.ArchivoPosition(user.posX(), user.posY(),vidas,nivel);
             System.exit(0);
         }
         if (bandera == KeyEvent.VK_RIGHT && right || bandera == KeyEvent.VK_D && right) {
@@ -225,34 +288,34 @@ public class Game {
         public void actionPerformed(ActionEvent e) {
             left = true;
             right = true;
-            up=true;
-            down=true;
-            
+            up = true;
+            down = true;
+
             if (user.area.intersects(wall1.area)) {
                 if (user.posX() > wall1.posX()) {
                     left = false;
                 } else {
                     right = false;
                 }
-                
-                if(user.posY()>wall1.posY()){
-                    up=false;
-                }else{
-                    down=false;
+
+                if (user.posY() > wall1.posY()) {
+                    up = false;
+                } else {
+                    down = false;
                 }
             }
-            
+
             if (user.area.intersects(wall2.area)) {
                 if (user.posX() > wall2.posX()) {
                     left = false;
                 } else {
                     right = false;
                 }
-                
-                if(user.posY()>wall2.posY()){
-                    up=false;
-                }else{
-                    down=false;
+
+                if (user.posY() > wall2.posY()) {
+                    up = false;
+                } else {
+                    down = false;
                 }
             }
             if (user.area.intersects(wall3.area)) {
@@ -261,11 +324,11 @@ public class Game {
                 } else {
                     right = false;
                 }
-                
-                if(user.posY()>wall3.posY()){
-                    up=false;
-                }else{
-                    down=false;
+
+                if (user.posY() > wall3.posY()) {
+                    up = false;
+                } else {
+                    down = false;
                 }
             }
             if (user.area.intersects(wall4.area)) {
@@ -274,11 +337,11 @@ public class Game {
                 } else {
                     right = false;
                 }
-                
-                if(user.posY()>wall4.posY()){
-                    up=false;
-                }else{
-                    down=false;
+
+                if (user.posY() > wall4.posY()) {
+                    up = false;
+                } else {
+                    down = false;
                 }
             }
             if (user.area.intersects(wall5.area)) {
@@ -287,78 +350,83 @@ public class Game {
                 } else {
                     right = false;
                 }
-                
-                if(user.posY()>wall5.posY()){
-                    up=false;
-                }else{
-                    down=false;
-                }
-            }
-            
-           //380  170-350   670-300
-            if(user.area.intersects(enemy.areaEnemy)){
-                 v.vida1.setVisible(false);
-            }
-            if(user.area.intersects(enemy2.areaEnemy)){
-                 v.vida1.setVisible(false);
-            }
-            if(user.area.intersects(enemy3.areaEnemy)){
-                 v.vida1.setVisible(false);
-            }
-            if(user.area.intersects(enemy4.areaEnemy)){
-                 v.vida1.setVisible(false);
-            }
-            int [] moveEnemy = level.enemyMoveLevel1();
-            if(enemy.posY()<=moveEnemy[0] && !controlEnemy1){
-                enemy.setPosicion(enemy.posX(), enemy.posY()+1);
-                if(enemy.posY()==moveEnemy[0])
-                    controlEnemy1=true;
-            }else{
-                if(enemy.posY()==moveEnemy[1]){
-                    controlEnemy1=false;
-                }
-                enemy.setPosicion(enemy.posX(), enemy.posY()-1);
-            }
 
-            if(enemy2.posX()<=910 && enemy2.controlEnemy){
-                 enemy2.setPosicion(enemy2.posX()+1, enemy2.posY());
-                 if(enemy2.posX()==910)
-                    enemy2.setControlEnemy();
-            }else{
-                enemy2.setPosicion(enemy2.posX()-1, enemy2.posY());
-                if(enemy2.posX()==670){
-                    enemy2.setControlEnemy();
-                }
-            }
-            
-            if(enemy3.controlEnemy){
-                 enemy3.setPosicion(enemy3.posX()+1, enemy3.posY());
-                 if(enemy3.posX()==160)
-                    enemy3.setControlEnemy();
-            }else{
-                enemy3.setPosicion(enemy3.posX()-1, enemy3.posY());
-                if(enemy3.posX()==25){
-                    enemy3.setControlEnemy();
-                }
-            }
-            
-            if(enemy4.controlEnemy){
-                 enemy4.setPosicion(enemy4.posX(), enemy4.posY()+1);
-                 if(enemy4.posY()==110)
-                    enemy4.setControlEnemy();
-            }else{
-                enemy4.setPosicion(enemy4.posX(), enemy4.posY()-1);
-                if(enemy4.posY()==15){
-                    enemy4.setControlEnemy();
+                if (user.posY() > wall5.posY()) {
+                    up = false;
+                } else {
+                    down = false;
                 }
             }
 
-            if(user.area.intersects(key.areaKey)){
+            //380  170-350   670-300
+            if (user.area.intersects(enemy.areaEnemy)) {
+                deleteVida();
+            }
+            if (user.area.intersects(enemy2.areaEnemy)) {
+                deleteVida();
+            }
+            if (user.area.intersects(enemy3.areaEnemy)) {
+                deleteVida();
+            }
+            if (user.area.intersects(enemy4.areaEnemy)) {
+                deleteVida();
+            }
+            int[] moveEnemy = level.enemyMoveLevel1();
+            if (enemy.posY() <= moveEnemy[0] && !controlEnemy1) {
+                enemy.setPosicion(enemy.posX(), enemy.posY() + 1);
+                if (enemy.posY() == moveEnemy[0]) {
+                    controlEnemy1 = true;
+                }
+            } else {
+                if (enemy.posY() == moveEnemy[1]) {
+                    controlEnemy1 = false;
+                }
+                enemy.setPosicion(enemy.posX(), enemy.posY() - 1);
+            }
+
+            if (enemy2.posX() <= 910 && enemy2.controlEnemy) {
+                enemy2.setPosicion(enemy2.posX() + 1, enemy2.posY());
+                if (enemy2.posX() == 910) {
+                    enemy2.setControlEnemy();
+                }
+            } else {
+                enemy2.setPosicion(enemy2.posX() - 1, enemy2.posY());
+                if (enemy2.posX() == 670) {
+                    enemy2.setControlEnemy();
+                }
+            }
+
+            if (enemy3.controlEnemy) {
+                enemy3.setPosicion(enemy3.posX() + 1, enemy3.posY());
+                if (enemy3.posX() == 160) {
+                    enemy3.setControlEnemy();
+                }
+            } else {
+                enemy3.setPosicion(enemy3.posX() - 1, enemy3.posY());
+                if (enemy3.posX() == 25) {
+                    enemy3.setControlEnemy();
+                }
+            }
+
+            if (enemy4.controlEnemy) {
+                enemy4.setPosicion(enemy4.posX(), enemy4.posY() + 1);
+                if (enemy4.posY() == 110) {
+                    enemy4.setControlEnemy();
+                }
+            } else {
+                enemy4.setPosicion(enemy4.posX(), enemy4.posY() - 1);
+                if (enemy4.posY() == 15) {
+                    enemy4.setControlEnemy();
+                }
+            }
+
+            if (user.area.intersects(key.areaKey)) {
+                key.key.setVisible(false);
                 key.llaveObtenida();
             }
-            System.out.println(key.getLlave());
-            if(user.area.intersects(puerta.areaEnemy)){
-                if(key.getLlave()){                    
+
+            if (user.area.intersects(puerta.areaEnemy)) {
+                if (key.getLlave()) {
                     nivel++;
                     agregarMuros();
                 }

@@ -85,5 +85,14 @@ public class Level {
         int[] enemyMove = {350, 170};
         return enemyMove;
     }
+    
+    public int[] positionUserLevel1(){
+        int[] position = {400, 450};
+        return position;
+    }
+    public int[] positionUserLevel2(){
+        int[] position = {400, 450};
+        return position;
+    }
 
 }

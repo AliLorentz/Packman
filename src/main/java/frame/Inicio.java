@@ -9,10 +9,14 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -23,6 +27,7 @@ import javax.swing.JTextField;
 public class Inicio {
 
     index fr;
+    JLabel fondo;
     JPanel panel;
     JButton ins, star, score, cred, salir, top;
     JTextField f1;
@@ -32,6 +37,7 @@ public class Inicio {
         this.fr = frame;
         componentes();
         frame.frame.add(panel);
+        fondo();
 
     }
 
@@ -66,6 +72,18 @@ public class Inicio {
             }
 
         });
+    }
+    
+     private void fondo() {
+        fondo = new JLabel();
+        fondo.setBounds(0, 0, 1000, 600);
+        URL url = getClass().getResource("object/fondo.jpg");
+        ImageIcon imagen = new ImageIcon(url);
+        Icon icon = new ImageIcon(imagen.getImage().getScaledInstance(fondo.getWidth(), fondo.getHeight(), fondo.getHeight()));
+        fondo.setIcon(icon);
+        fondo.repaint();
+        panel.add(fondo);
+
     }
 
 }

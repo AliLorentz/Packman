@@ -29,7 +29,7 @@ public class index {
         frame.getContentPane().setLayout(null);
         frame.setResizable(false);
 
-        window = new Window(this);
+        inicio = new Inicio(this);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
