@@ -33,6 +33,16 @@ public class Level {
             6240, 125, 200, 20};
         return wall;
     }
+    
+    public int[] wallLevel3() {
+        int[] wall = {
+            5200, 150, 20, 450,
+            5200, 400, 600, 20,
+            5200, 150, 450, 20,
+            5640, 150, 20, 150,
+            56240, 125, 200, 20};
+        return wall;
+    }
 
     public int[] enemyLevel1() {
         int[] enemyLevel1 = {
@@ -61,6 +71,15 @@ public class Level {
         return enemyLevel2;
     }
     
+    public int[] enemyLevel3() {
+        int[] enemyLevel2 = {
+            5520, 170,
+            5670, 250,
+            5523, 200,
+            5400, 20};
+        return enemyLevel2;
+    }
+    
     public int [] llaveLevel1(){
         int [] llave={700,200};
         return llave;
@@ -71,6 +90,11 @@ public class Level {
         return llave;
     }
     
+    public int [] llaveLevel3(){
+        int [] llave={450,300};
+        return llave;
+    }
+    
     public int [] PuertaLevel1(){
         int [] puerta={500,0};
         return puerta;
@@ -78,6 +102,11 @@ public class Level {
     
     public int [] PuertaLevel2(){
         int [] puerta={100,510};
+        return puerta;
+    }
+    
+    public int [] PuertaLevel3(){
+        int [] puerta={450,0};
         return puerta;
     }
 

@@ -10,10 +10,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.logging.Logger;
 import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -32,6 +35,7 @@ public class Game {
     private Enemy enemy, enemy2, enemy3, enemy4;
     private Key key;
     private Puerta puerta;
+    JLabel fondo;
     Level level;
     int vidas = 0;
     private Wall wall1, wall2, wall3, wall4, wall5, wall6;
@@ -55,18 +59,21 @@ public class Game {
         ventana();
         movimiento();
         addElemets();
-        agregarMuros();
+        agregarMuros();       
         t = new Timer(5, escuchante);
         t.start();
         fr.add(panel);
     }
 
     private void addElemets() {
+        
         agregarVida();
         agregarPersonaje();
         agregarEnemigos();
         agregarLlave();
         agregarPuerta();
+       
+        
     }
 
     private void ventana() {
@@ -87,7 +94,7 @@ public class Game {
             if(leer!=null){
             int x=Integer.parseInt(leer[0]);
             int y=Integer.parseInt(leer[1]); 
-            user.setPosicion(x, y);
+                user.setPosicion(x, y);
             }
             
             panel.add(user.personaje);
@@ -115,8 +122,13 @@ public class Game {
         int[] wallPosition;
         if (nivel == 1) {
             wallPosition = level.wallLevel1();
-        } else {
+        } else if(nivel==2){
             wallPosition = level.wallLevel2();
+            panel.removeAll();
+            panel.updateUI();
+            addElemets();
+        }else{
+            wallPosition = level.wallLevel3();
             panel.removeAll();
             panel.updateUI();
             addElemets();
@@ -145,6 +157,7 @@ public class Game {
         panel.add(wall3.wall);
         panel.add(wall4.wall);
         panel.add(wall5.wall);
+         fondo();
 
     }
 
@@ -153,8 +166,11 @@ public class Game {
         int[] enemyLevel;
         if (nivel == 1) {
             enemyLevel = l1.enemyLevel1();
-        } else {
+        } else if(nivel==2){
             enemyLevel = l1.enemyLevel2();
+        }
+        else {
+            enemyLevel = l1.enemyLevel3();
         }
 
         enemy = new Enemy(enemyLevel[0], enemyLevel[1]);
@@ -173,8 +189,10 @@ public class Game {
         int[] enemyLevel;
         if (nivel == 1) {
             enemyLevel = l1.llaveLevel1();
-        } else {
+        } else if(nivel==2){
             enemyLevel = l1.llaveLevel2();
+        }else {
+            enemyLevel = l1.llaveLevel3();
         }
         key = new Key(enemyLevel[0], enemyLevel[1]);
         panel.add(key.key);
@@ -186,11 +204,38 @@ public class Game {
         int[] enemyLevel;
         if (nivel == 1) {
             enemyLevel = l1.PuertaLevel1();
-        } else {
+        } else if(nivel==2) {
             enemyLevel = l1.PuertaLevel2();
+        }
+        else if(nivel==3){
+            enemyLevel = l1.PuertaLevel3();
+        }
+        else{
+            enemyLevel = l1.PuertaLevel1();
+            archivo = new Archivo("s");
+            archivo.ArchivoPosition(400, 450,0,1);
+            JOptionPane.showMessageDialog(null, "Has Ganado gracias por jugae");
+            fr.remove(panel);
+            panel.setVisible(false);
+            t.stop();
+             
+            System.exit(0);
+            
         }
         puerta = new Puerta(enemyLevel[0], enemyLevel[1]);
         panel.add(puerta.door);
+    }
+    
+    private void fondo() {
+        fondo = new JLabel();
+        fondo.setBounds(0, 0, 1000, 600);
+        URL url = getClass().getResource("object/fondoJuego.jpg");
+        ImageIcon imagen = new ImageIcon(url);
+        Icon icon = new ImageIcon(imagen.getImage().getScaledInstance(fondo.getWidth(), fondo.getHeight(), fondo.getHeight()));
+        fondo.setIcon(icon);
+        fondo.repaint();
+        panel.add(fondo);
+
     }
 
     private void deleteVida() {
@@ -427,8 +472,11 @@ public class Game {
 
             if (user.area.intersects(puerta.areaEnemy)) {
                 if (key.getLlave()) {
+                    archivo = new Archivo("s");
+                    archivo.ArchivoPosition(400, 450,vidas,nivel);
                     nivel++;
                     agregarMuros();
+                    
                 }
             }
         }
